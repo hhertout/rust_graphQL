@@ -4,7 +4,7 @@ use actix_web::{
     App, HttpServer,
 };
 
-use crate::{api::graphql::graphql_route, config::cors::config_cors, graphql::schema};
+use crate::{api::graphql::graphql_route, config::cors::config_cors, resolver::user::schema};
 
 use self::playground::{graphiql_route, playground_route};
 

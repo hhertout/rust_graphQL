@@ -1,6 +1,7 @@
-use sea_orm::DatabaseConnection;
+use crate::entity::user::Model;
 
-use crate::schemas::user::CreateUserInput;
+use crate::entity::user::Entity as User;
+use sea_orm::{DatabaseConnection, EntityTrait};
 
 pub struct UserService;
 
@@ -8,6 +9,11 @@ impl UserService {
     pub fn new() -> Self {
         Self {}
     }
-
-    pub async fn create_user(&self, db_connection: &mut DatabaseConnection, user: CreateUserInput) {}
+    pub async fn find(&self, db_pool: &DatabaseConnection) -> Option<Vec<Model>> {
+        let users = User::find().all(db_pool).await;
+        match users {
+            Ok(users) => Some(users),
+            Err(_) => None,
+        }
+    }
 }

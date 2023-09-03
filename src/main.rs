@@ -1,6 +1,6 @@
 mod api;
 mod config;
-mod graphql;
+mod resolver;
 mod services;
 mod schemas;
 mod entity;

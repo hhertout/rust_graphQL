@@ -1,8 +1,6 @@
-use crate::entity::user::Model;
+use crate::{entity::user::Model, services::user::UserService};
 
-use super::entity::user::Entity as User;
 use juniper::{graphql_object, EmptyMutation, EmptySubscription, RootNode};
-use sea_orm::EntityTrait;
 use crate::config::db::Database;
 
 // Queries represent the callable funcitons
@@ -13,11 +11,7 @@ impl Query {
         "1.0"
     }
     async fn get_users(context: &Database) -> Option<Vec<Model>> {
-        let users = User::find().all(&context.db_pool).await;
-        match users {
-            Ok(users) => Some(users),
-            Err(_) => None,
-        }
+        UserService::new().find(&context.db_pool).await
     }
 }
 

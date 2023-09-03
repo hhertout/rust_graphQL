@@ -4,7 +4,7 @@ use actix_web::web::{self};
 use actix_web::{Error, HttpResponse};
 use juniper_actix::graphql_handler;
 
-use crate::graphql::Schema;
+use crate::resolver::user::Schema;
 use crate::config::db::Database;
 
 pub async fn graphql_route(
