@@ -9,9 +9,9 @@ use sea_orm::entity::prelude::*;
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    pub name: Option<String>,
-    pub email: Option<String>,
-    pub password: Option<String>,
+    pub name: String,
+    pub email: String,
+    pub password: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

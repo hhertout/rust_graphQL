@@ -1,7 +1,12 @@
+use crate::entity::user;
+use crate::entity::user::ActiveModel;
 use crate::entity::user::Model;
 
 use crate::entity::user::Entity as User;
+use crate::schemas::user::CreateUserInput;
+use sea_orm::ActiveModelTrait;
 use sea_orm::{DatabaseConnection, EntityTrait};
+use sea_orm::Set;
 
 pub struct UserService;
 
@@ -22,5 +27,14 @@ impl UserService {
             Ok(user) => user,
             Err(_) => None,
         }
+    }
+    pub async fn create_user(&self, db_pool: &DatabaseConnection, user: CreateUserInput) -> Option<ActiveModel> {
+        let user = user::ActiveModel {
+            email: Set(user.email.to_owned()),
+            password: Set(user.password.to_owned()),
+            name: Set(user.name.to_owned()),
+            ..Default::default()
+        };
+        user.save(db_pool).await.ok()
     }
 }

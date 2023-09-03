@@ -1,8 +1,12 @@
-use crate::{entity::user::Model, services::user::UserService};
+use crate::{
+    entity::user::Model,
+    schemas::user::{CreateUserInput, UserCreated},
+    services::user::UserService,
+};
 
-use juniper::{graphql_object, EmptyMutation, EmptySubscription, RootNode};
 use crate::config::db::Database;
-
+use juniper::{graphql_object, EmptySubscription, RootNode};
+use sea_orm::TryIntoModel;
 
 type User = Model;
 // Queries represent the callable funcitons
@@ -17,12 +21,28 @@ impl Query {
     }
 }
 
-pub type Schema = RootNode<'static, Query, EmptyMutation<Database>, EmptySubscription<Database>>;
+pub struct Mutation;
+#[graphql_object(context = Database)]
+impl Mutation {
+    async fn create_user(context: &Database, infos: CreateUserInput) -> Option<UserCreated> {
+        let user = UserService::new()
+            .create_user(&context.db_pool, infos)
+            .await;
+        match user {
+            Some(user) => {
+                let user_created = user.try_into_model().unwrap();
+                Some(UserCreated {
+                    name: user_created.name,
+                    email: user_created.email,
+                })
+            }
+            None => None,
+        }
+    }
+}
+
+pub type Schema = RootNode<'static, Query, Mutation, EmptySubscription<Database>>;
 
 pub fn schema() -> Schema {
-    Schema::new(
-        Query,
-        EmptyMutation::<Database>::new(),
-        EmptySubscription::<Database>::new(),
-    )
+    Schema::new(Query, Mutation, EmptySubscription::<Database>::new())
 }
