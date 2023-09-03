@@ -3,7 +3,7 @@ use crate::entity::user::ActiveModel;
 use crate::entity::user::Model;
 
 use crate::entity::user::Entity as User;
-use crate::schemas::user::CreateUserInput;
+use crate::type_defs::user::CreateUserInput;
 use sea_orm::ActiveModelTrait;
 use sea_orm::{DatabaseConnection, EntityTrait};
 use sea_orm::Set;

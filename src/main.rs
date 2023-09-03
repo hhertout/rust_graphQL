@@ -2,7 +2,7 @@ mod api;
 mod config;
 mod resolver;
 mod services;
-mod schemas;
+mod type_defs;
 mod entity;
 
 #[actix_web::main]

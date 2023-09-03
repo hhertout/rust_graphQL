@@ -1,6 +1,6 @@
 use crate::{
     entity::user::Model,
-    schemas::user::{CreateUserInput, UserCreated},
+    type_defs::user::{CreateUserInput, UserCreated},
     services::user::UserService,
 };
 
