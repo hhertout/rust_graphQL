@@ -3,15 +3,17 @@ use crate::{entity::user::Model, services::user::UserService};
 use juniper::{graphql_object, EmptyMutation, EmptySubscription, RootNode};
 use crate::config::db::Database;
 
+
+type User = Model;
 // Queries represent the callable funcitons
 pub struct Query;
 #[graphql_object(context = Database)]
 impl Query {
-    fn api_version() -> &'static str {
-        "1.0"
-    }
-    async fn get_users(context: &Database) -> Option<Vec<Model>> {
+    async fn get_users(context: &Database) -> Option<Vec<User>> {
         UserService::new().find(&context.db_pool).await
+    }
+    async fn get_user_by_id(context: &Database, id: i32) -> Option<User> {
+        UserService::new().find_by_id(&context.db_pool, id).await
     }
 }
 

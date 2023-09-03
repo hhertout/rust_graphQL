@@ -16,4 +16,11 @@ impl UserService {
             Err(_) => None,
         }
     }
+    pub async fn find_by_id(&self, db_pool: &DatabaseConnection, id: i32) -> Option<Model> {
+        let user = User::find_by_id(id).one(db_pool).await;
+        match user {
+            Ok(user) => user,
+            Err(_) => None,
+        }
+    }
 }
