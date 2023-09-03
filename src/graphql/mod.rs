@@ -1,6 +1,9 @@
-use juniper::{graphql_object, EmptyMutation, EmptySubscription, RootNode};
+use crate::entity::user::Model;
 
-use self::data::{Database, User};
+use super::entity::user::Entity as User;
+use data::Database;
+use juniper::{graphql_object, EmptyMutation, EmptySubscription, RootNode};
+use sea_orm::EntityTrait;
 
 pub mod data;
 
@@ -11,12 +14,12 @@ impl Query {
     fn api_version() -> &'static str {
         "1.0"
     }
-
-    fn user(
-        context: &Database,
-        #[graphql(description = "id of the user")] id: i32,
-    ) -> Option<&User> {
-        context.get_user(&id)
+    async fn get_users(context: &Database) -> Option<Vec<Model>> {
+        let users = User::find().all(&context.db_pool).await;
+        match users {
+            Ok(users) => Some(users),
+            Err(_) => None,
+        }
     }
 }
 

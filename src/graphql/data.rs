@@ -1,39 +1,16 @@
-use std::collections::HashMap;
+use sea_orm::DatabaseConnection;
 
-use juniper::GraphQLObject;
+use crate::config::db::db_connect;
 
-
-#[derive(Clone, GraphQLObject)]
-pub struct User {
-    id: i32,
-    name: String,
-}
-
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct Database {
-    users: HashMap<i32, User>,
+    pub db_pool: DatabaseConnection
 }
 impl Database {
-    pub fn new() -> Database {
-        let mut users = HashMap::new();
-        users.insert(
-            1,
-            User {
-                id: 1,
-                name: "Aron".into(),
-            },
-        );
-        users.insert(
-            2,
-            User {
-                id: 2,
-                name: "Bea".into(),
-            },
-        );
-        Database { users }
-    }
-    pub fn get_user(&self, id: &i32) -> Option<&User> {
-        self.users.get(id)
+    pub async fn new() -> Database {
+        Database {
+            db_pool: db_connect().await,
+        }
     }
 }
 
