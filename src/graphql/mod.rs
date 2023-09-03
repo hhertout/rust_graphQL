@@ -1,11 +1,9 @@
 use crate::entity::user::Model;
 
 use super::entity::user::Entity as User;
-use data::Database;
 use juniper::{graphql_object, EmptyMutation, EmptySubscription, RootNode};
 use sea_orm::EntityTrait;
-
-pub mod data;
+use crate::config::db::Database;
 
 // Queries represent the callable funcitons
 pub struct Query;
