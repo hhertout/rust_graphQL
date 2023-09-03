@@ -4,7 +4,7 @@ use actix_web::{
     App, HttpServer,
 };
 
-use crate::{api::graphql::graphql_route, config::config_cors, graphql::schema};
+use crate::{api::graphql::graphql_route, config::cors::config_cors, graphql::schema};
 
 use self::playground::{graphiql_route, playground_route};
 
@@ -17,7 +17,7 @@ pub async fn start() -> std::io::Result<()> {
             .app_data(Data::new(schema()))
             .wrap(config_cors())
             .wrap(Compress::default())
-            .wrap(Logger::new("Request => %s; %a \"%r\" | time => %Dms"))
+            .wrap(Logger::new("Request => %s | time => %Dms"))
             .service(
                 web::resource("/graphql")
                     .route(web::post().to(graphql_route))

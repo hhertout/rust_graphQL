@@ -12,6 +12,6 @@ pub async fn graphql_route(
     payload: actix_web::web::Payload,
     schema: web::Data<Schema>,
 ) -> Result<HttpResponse, Error> {
-    let context = Database::new();
+    let context = Database::new().await;
     graphql_handler(&schema, &context, req, payload).await
 }
