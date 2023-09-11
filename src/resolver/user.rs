@@ -1,11 +1,11 @@
 use crate::{
     entity::user::Model,
-    type_defs::user::{CreateUserInput, UserCreated, UpdateUserInput},
     services::user::UserService,
+    type_defs::user::{CreateUserInput, UpdateUserInput, UserCreated},
 };
 
 use crate::config::db::Database;
-use juniper::{graphql_object, EmptySubscription, RootNode, GraphQLValue};
+use juniper::{graphql_object, EmptySubscription, RootNode};
 use sea_orm::TryIntoModel;
 
 type User = Model;
@@ -20,7 +20,9 @@ impl Query {
         UserService::new().find_by_id(&context.db_pool, id).await
     }
     async fn get_user_by_email(context: &Database, email: String) -> Option<User> {
-        UserService::new().find_by_email(&context.db_pool, &email).await
+        UserService::new()
+            .find_by_email(&context.db_pool, &email)
+            .await
     }
 }
 
@@ -43,15 +45,15 @@ impl Mutation {
         }
     }
     async fn update_user(context: &Database, infos: UpdateUserInput) -> Option<UserCreated> {
-        let user = UserService::new().update_user(&context.db_pool, infos).await;
+        let user = UserService::new()
+            .update_user(&context.db_pool, infos)
+            .await;
         match user {
-            Some(user) => {
-                Some(UserCreated {
-                    name: user.name,
-                    email: user.email
-                })
-            },
-            None => None, 
+            Some(user) => Some(UserCreated {
+                name: user.name,
+                email: user.email,
+            }),
+            None => None,
         }
     }
 }
