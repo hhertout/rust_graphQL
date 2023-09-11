@@ -7,6 +7,12 @@ pub struct CreateUserInput {
     pub password: String,
 }
 
+#[derive(Clone, GraphQLInputObject)]
+pub struct UpdateUserInput {
+    pub email: String,
+    pub name: String,
+}
+
 #[derive(Clone, GraphQLObject)]
 pub struct UserCreated {
     pub name: String,
@@ -19,5 +25,3 @@ pub struct User {
     pub email: String,
     pub password: String,
 }
-
-
