@@ -4,9 +4,12 @@ use crate::entity::user::Model;
 
 use crate::entity::user::Entity as User;
 use crate::type_defs::user::CreateUserInput;
+use crate::type_defs::user::UpdateUserInput;
 use sea_orm::ActiveModelTrait;
 use sea_orm::{DatabaseConnection, EntityTrait};
 use sea_orm::Set;
+use sea_orm::QueryFilter;
+use sea_orm::ColumnTrait;
 
 pub struct UserService;
 
@@ -18,6 +21,13 @@ impl UserService {
         let users = User::find().all(db_pool).await;
         match users {
             Ok(users) => Some(users),
+            Err(_) => None,
+        }
+    }
+    pub async fn find_by_email(&self, db_pool: &DatabaseConnection, email: &str) -> Option<Model> {
+        let user = User::find().filter(user::Column::Email.contains(email)).one(db_pool).await;
+        match user {
+            Ok(user) => user,
             Err(_) => None,
         }
     }
@@ -36,5 +46,17 @@ impl UserService {
             ..Default::default()
         };
         user.save(db_pool).await.ok()
+    }
+    pub async fn update_user(&self, db_pool: &DatabaseConnection, user_updated: UpdateUserInput) -> Option<Model> {
+        let user = &self.find_by_email(db_pool, &user_updated.email).await;
+        if user.is_none() {
+            None
+        } else {
+            let mut user: user::ActiveModel = user.clone().unwrap().into();
+            user.name = Set(user_updated.name.to_owned());
+
+            let user = user.update(db_pool).await.unwrap();
+            Some(user)
+        }
     }
 }
